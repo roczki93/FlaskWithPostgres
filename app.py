@@ -1,12 +1,16 @@
 #!flask/bin/python
-from flask import Flask
-from flask import jsonify, request
+from flask import Flask, render_template
+from flask import jsonify, request, abort
+#import flask_restless
 from flask_sqlalchemy import SQLAlchemy
 
+import os
 
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://myuser:mypass@192.168.177.183:5432/mydatabase'
+app.config['SQLALCHEMY_MIGRATE_REPO'] = os.path.join(basedir, 'db_repository')
 app.debug = True
 db = SQLAlchemy(app)
 
@@ -33,6 +37,21 @@ class User_information(db.Model):
 	
     def __repr__(self):
 	return '<user_information %r>' % self.id
+    @property
+    def serialize(self):
+	return {
+	    'id'	:self.id,
+	    'first_name':self.first_name,
+	    'last_name'	:self.last_name,
+	    'email'	:self.email,
+	    'gender'	:self.gender,
+	    'street'	:self.street,
+	    'latitude'	:self.latitude,
+	    'longitude'	:self.longitude
+	}
+    @property
+    def serialize_many2many(self):
+	return [ item.serialize for item in self.many2many]
 	
 @app.route('/')
 def index():
@@ -47,7 +66,22 @@ def post_userinfo():
     
     db.session.add(user_info)
     db.session.commit()
+    #return "%r" % user_info.id
     return "OK"
+    
+@app.route('/api/v1/userinfo/', methods=['GET'])
+def get_userinfo():
+    #my_userinfo = User_information.query.limit(10).offset(0).all()
+    #oneItem = User_information.query.filter_by(first_name="Lukasz").first()
+    #print oneItem
+    #onverted = list(jsonify({'user_info': User_information.query.all()}))
+    
+    return jsonify([i.serialize for i in User_information.query.order_by('-id').limit(10).all()])
+
+@app.route('/api/v1/userinfo/<string:key>')
+def get_userinfo_by(key):
+    return jsonify([i.serialize for i in User_information.query.filter_by(first_name=key)])
+    
 tasks = [
     {
         'id': 1,
