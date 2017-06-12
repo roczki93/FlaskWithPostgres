@@ -18,7 +18,9 @@ download app.py
 
 chmod a+x app.py
 
- flask/bin/pip install flask_sqlalchemy
+flask/bin/pip install flask_sqlalchemy
+
+flask/bin/pip install psycopg2
 
 ./app.py 
 
