@@ -26,33 +26,33 @@ class User_information(db.Model):
     longitude = db.Column(db.String(50))
     
     def __init__(self, first_name, last_name, email, gender, city, street, latitude, longitude):
-	self.first_name = first_name
-	self.last_name = last_name
-	self.email = email
-	self.gender = gender
-	self.city = city
-	self.street = street
-	self.latitude = latitude
-	self.longitude = longitude
-	
+    self.first_name = first_name
+    self.last_name = last_name
+    self.email = email
+    self.gender = gender
+    self.city = city
+    self.street = street
+    self.latitude = latitude
+    self.longitude = longitude
+    
     def __repr__(self):
-	return '<user_information %r>' % self.id
+    return '<user_information %r>' % self.id
     @property
     def serialize(self):
-	return {
-	    'id'	:self.id,
-	    'first_name':self.first_name,
-	    'last_name'	:self.last_name,
-	    'email'	:self.email,
-	    'gender'	:self.gender,
-	    'street'	:self.street,
-	    'latitude'	:self.latitude,
-	    'longitude'	:self.longitude
-	}
+    return {
+        'id'    :self.id,
+        'first_name':self.first_name,
+        'last_name' :self.last_name,
+        'email' :self.email,
+        'gender'    :self.gender,
+        'street'    :self.street,
+        'latitude'  :self.latitude,
+        'longitude' :self.longitude
+    }
     @property
     def serialize_many2many(self):
-	return [ item.serialize for item in self.many2many]
-	
+    return [ item.serialize for item in self.many2many]
+    
 @app.route('/')
 def index():
     return "Hello, World!"
@@ -78,9 +78,24 @@ def get_userinfo():
     
     return jsonify([i.serialize for i in User_information.query.order_by('-id').limit(10).all()])
 
-@app.route('/api/v1/userinfo/<string:key>')
+@app.route('/api/v1/userinfo/<string:key>', methods=['GET'])
 def get_userinfo_by(key):
-    return jsonify([i.serialize for i in User_information.query.filter_by(first_name=key)])
+    return jsonify([i.serialize for i in User_information.query.filter_by(id=key)])
+
+@app.route('/api/v1/userinfo/<string:key>', methods=['PUT'])
+def put_userinfo(key):
+    user_info= User_information(request.form['first_name'],request.form['last_name'], request.form['email'], request.form['gender'], request.form['city'], request.form['street'], request.form['latitude'], request.form['longitude'])
+    update = User_information.query.filter_by(id=key).first()
+    update.email = user_info.email
+    update.first_name = user_info.first_name
+    update.last_name = user_info.last_name
+    update.gender = user_info.gender
+    update.latitude = user_info.latitude
+    update.longitude = user_info.longitude
+    update.street = user_info.street
+    db.session.commit()
+    return jsonify([i.serialize for i in User_information.query.filter_by(id=key)])
+
     
 tasks = [
     {
