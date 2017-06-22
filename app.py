@@ -9,7 +9,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://myuser:mypass@192.168.177.183:5432/mydatabase'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://myuser:mypass@192.168.177.183:5432/mydatabase1'
 app.config['SQLALCHEMY_MIGRATE_REPO'] = os.path.join(basedir, 'db_repository')
 app.debug = True
 db = SQLAlchemy(app)
