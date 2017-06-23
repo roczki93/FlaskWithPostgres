@@ -98,8 +98,8 @@ def put_userinfo(key):
 
 @app.route('/api/v1/userinfo/<string:key>',methods=['DELETE'])
 def del_userinfo(key):
-    del = User_information.query.filter_by(id=key).first()
-    db.session.delete(del)
+    delete = User_information.query.filter_by(id=key).first()
+    db.session.delete(delete)
     db.session.commit()
     output = "Deleted"
     return jsonify(output)
