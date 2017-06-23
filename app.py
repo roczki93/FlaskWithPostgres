@@ -26,32 +26,32 @@ class User_information(db.Model):
     longitude = db.Column(db.String(50))
     
     def __init__(self, first_name, last_name, email, gender, city, street, latitude, longitude):
-    self.first_name = first_name
-    self.last_name = last_name
-    self.email = email
-    self.gender = gender
-    self.city = city
-    self.street = street
-    self.latitude = latitude
-    self.longitude = longitude
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.gender = gender
+        self.city = city
+        self.street = street
+        self.latitude = latitude
+        self.longitude = longitude
     
     def __repr__(self):
-    return '<user_information %r>' % self.id
+        return '<user_information %r>' % self.id
     @property
     def serialize(self):
-    return {
-        'id'    :self.id,
-        'first_name':self.first_name,
-        'last_name' :self.last_name,
-        'email' :self.email,
-        'gender'    :self.gender,
-        'street'    :self.street,
-        'latitude'  :self.latitude,
-        'longitude' :self.longitude
-    }
+        return {
+            'id'    :self.id,
+            'first_name':self.first_name,
+            'last_name' :self.last_name,
+            'email' :self.email,
+            'gender'    :self.gender,
+            'street'    :self.street,
+            'latitude'  :self.latitude,
+            'longitude' :self.longitude
+        }
     @property
     def serialize_many2many(self):
-    return [ item.serialize for item in self.many2many]
+        return [ item.serialize for item in self.many2many]
     
 @app.route('/')
 def index():
