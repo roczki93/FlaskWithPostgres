@@ -96,6 +96,13 @@ def put_userinfo(key):
     db.session.commit()
     return jsonify([i.serialize for i in User_information.query.filter_by(id=key)])
 
+@app.route('/api/v1/userinfo/<string:key>',methods=['DELETE'])
+def del_userinfo(key):
+    del = User_information.query.filter_by(id=key).first()
+    db.session.delete(del)
+    db.session.commit()
+    output = "Deleted"
+    return jsonify(output)
     
 tasks = [
     {
